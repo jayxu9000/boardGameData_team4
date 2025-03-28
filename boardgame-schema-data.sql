@@ -37,3 +37,5 @@ create table boardgame_rank (
 
     foreign key (boardgame_id) references boardgame_primary(boardgame_id) ON DELETE CASCADE ON UPDATE CASCADE  
 );
+
+-- done 3/28/2025 6:36 PM
