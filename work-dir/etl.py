@@ -1,7 +1,9 @@
 # Cleaning - filling in missing values w/ 0's
-from file_io import rename_part_to_file_name
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, when
+
+from pyspark.sql import Window
+from pyspark.sql.functions import row_number
 
 spark = SparkSession.builder.appName("BoardGamesETL").getOrCreate()
 
@@ -14,7 +16,6 @@ secondary_df = spark.read.csv(secondary_input, header=True, inferSchema=True)
 
 merged_df = primary_df.join(secondary_df, on=["bgg_id", "boardgame_name", "users_rated", "year_published"], how="left")
 
-
 # merged_df.write.csv(output_path, header=True, mode="overwrite")
 
 # rename_part_to_file_name(output_path, "finalboardgame.csv")
@@ -26,6 +27,42 @@ valid_df = merged_df.filter(
 
 valid_df = valid_df.fillna(0)
 
+# # Add sequential IDs ordered by a unique column (e.g., bgg_id)
+# window = Window.orderBy("bgg_id")  # Use a unique column for ordering
+# valid_df = valid_df.withColumn("boardgame_id", row_number().over(window))
+
+newPrimary_df = valid_df.select(
+    # "boardgame_id",
+    "bgg_id",
+    "boardgame_name",
+    "users_rated",
+    "year_published",
+    "bayes_average",
+    "average",
+    "is_expansion",
+    "min_players",
+    "max_players",
+    "play_time",
+    "min_age",
+    "rating_average",
+    "complexity_average",
+    "owned_users"
+)
+
+rank_df = valid_df.select(
+    # "boardgame_id",
+    "boardgame_rank",
+    "abstracts_rank",
+    "cgs_rank",
+    "childrensgames_rank",
+    "familygames_rank",
+    "partygames_rank",
+    "strategygames_rank",
+    "thematic_rank",
+    "wargames_rank",
+    "bgg_rank"
+)
+
 jdbc_options = {
     "url": spark.conf.get("spark.mysql.boardgame.url"),
     "user": spark.conf.get("spark.mysql.boardgame.user"),
@@ -33,7 +70,11 @@ jdbc_options = {
     "driver": "com.mysql.cj.jdbc.Driver",
 }
 
-valid_df.write.format("jdbc").options(**jdbc_options, dbtable="boardgame_primary").mode(
+newPrimary_df.write.format("jdbc").options(**jdbc_options, dbtable="boardgame_primary").mode(
+    "append"
+).save()
+
+rank_df.write.format("jdbc").options(**jdbc_options, dbtable="boardgame_rank").mode(
     "append"
 ).save()
 
