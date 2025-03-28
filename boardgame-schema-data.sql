@@ -22,7 +22,7 @@ create table boardgame_primary (
 
 create table boardgame_rank (
     boardgame_rank_id int primary key auto_increment,
-    -- boardgame_id int,
+    boardgame_id int,
     
     boardgame_rank int,
     abstracts_rank int null,
@@ -33,7 +33,7 @@ create table boardgame_rank (
     strategygames_rank int null, 
     thematic_rank int null,
     wargames_rank int null,
-    bgg_rank int
+    bgg_rank int,
 
-    -- foreign key (boardgame_id) references boardgame_primary(boardgame_id) ON DELETE CASCADE ON UPDATE CASCADE  
+    foreign key (boardgame_id) references boardgame_primary(boardgame_id) ON DELETE CASCADE ON UPDATE CASCADE  
 );

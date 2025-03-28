@@ -13,17 +13,23 @@ default_args = {
  
 # Define the DAG
 with DAG(
+
     'boardgame_etl',
     default_args=default_args,
     description='ETL pipeline for board game data using Spark and Airflow',
     schedule_interval='@daily',
     catchup=False,
 ) as dag:
+    command = """
+    export JAVA_HOME=/opt/java/openjdk;
+    /opt/spark/bin/spark-submit --master spark://spark-leader:7077 /opt/spark/work-dir/etl.py; 
+    """
     run_spark_etl = SSHOperator(
         task_id='run_spark_etl',
         ssh_conn_id='spark_ssh',  # Make sure to set up this connection in Airflow
-        command='spark-submit /opt/spark/work-dir/etl.py',
+        command=command,
         dag=dag,
+        cmd_timeout=600
     )
 
 run_spark_etl

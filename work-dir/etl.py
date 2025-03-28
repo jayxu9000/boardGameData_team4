@@ -27,9 +27,9 @@ valid_df = merged_df.filter(
 
 valid_df = valid_df.fillna(0)
 
-# # Add sequential IDs ordered by a unique column (e.g., bgg_id)
-# window = Window.orderBy("bgg_id")  # Use a unique column for ordering
-# valid_df = valid_df.withColumn("boardgame_id", row_number().over(window))
+# Add sequential IDs ordered by a unique column (e.g., bgg_id)
+window = Window.orderBy("bgg_id")  # Use a unique column for ordering
+valid_df = valid_df.withColumn("boardgame_id", row_number().over(window))
 
 newPrimary_df = valid_df.select(
     # "boardgame_id",
