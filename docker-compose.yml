@@ -38,6 +38,7 @@ services:
     ports:
       - 8082:8081 # Worker UI
     volumes:
+      - ./input:/opt/spark/files/in 
       - ./output:/opt/spark/files/out # leader/workers share a common directory in our filesystem
     networks:
       - spark-network
@@ -53,6 +54,7 @@ services:
     ports:
       - 8083:8081 # Worker UI
     volumes:
+      - ./input:/opt/spark/files/in 
       - ./output:/opt/spark/files/out # leader/workers share a common directory in our filesystem
     networks:
       - spark-network
