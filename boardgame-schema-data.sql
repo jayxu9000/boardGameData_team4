@@ -7,12 +7,6 @@ create table boardgame (
     bgg_id int unique, 
     boardgame_name varchar(255) not null,
     year_published int
-);
-
-create table boardgame_primary (
-    boardgame_primary_id int primary key auto_increment,
-    boardgame_id int,
-    
     boardgame_rank int,
     bayes_average float,
     average float,
@@ -26,22 +20,18 @@ create table boardgame_primary (
     strategygames_rank int null, 
     thematic_rank int null,
     wargames_rank int null,
-
-    foreign key (boardgame_id) references boardgame(boardgame_id) on delete cascade
 );
 
-create table boardgame_secondary (
-    boardgame_secondary_id int primary key auto_increment,
-    boardgame_id int,
+-- create table boardgame_primary (
+--     boardgame_primary_id int primary key auto_increment,
+--     boardgame_id int,
     
-    min_players int,
-    max_players int,
-    play_time int,
-    min_age int,
-    users_rated int,
-    rating_average float,
-    complexity_average float,
-    owned_users int,
+--     min_players int,
+--     max_players int,
+--     play_time int,
+--     min_age int,
+--     complexity_average float,
+--     owned_users int,
 
-    foreign key (boardgame_id) references boardgame(boardgame_id) on delete cascade
-);
+--     foreign key (boardgame_id) references boardgame(boardgame_id) on delete cascade
+-- );
